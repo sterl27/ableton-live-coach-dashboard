@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+# Ableton Live 12 Suite Interactive Coach Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional, high-performance dashboard interface inspired by **Ableton Live 12**, designed for a native AI coaching experience using **Gemini 2.5 Flash Native Audio**.
 
-Currently, two official plugins are available:
+## 🎹 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Live Dashboard Interface**: A custom-built UI with a dark, professional aesthetic mirroring the Ableton Live 12 design language.
+- **AI Coach Hub**: A central interaction point with a simulated responsive chat system.
+- **Real-time Audio Visualizer**: A dynamic frequency visualizer that reacts to voice activity and AI responses.
+- **Status Indicators**: Pulse animations for "Stream Live" and "Voice Active" system states.
+- **Core Expertise Explorer**: Deep navigation for 10 specialized DAW mastery areas:
+  - Core DAW Mastery
+  - Live Performance
+  - Sound Design
+  - MPE & Expression
+  - Mixing & Mastering
+  - Arrangement View
+  - Max for Live
+  - MIDI Effects
+  - Network Sync
+  - Hardware Integration
+- **Contextual Interaction Modes**: Switch between *Immediate Help*, *Deep Dive*, *Workshop*, and *Critique* modes to tailor the coach's behavior.
+- **Audio Engine Simulation**: Real-time display of sample rates, buffer sizes, and latency metrics.
 
-## Expanding the ESLint configuration
+## 🚀 Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Framework**: [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Styling**: Vanilla CSS with custom design tokens
 
-- Configure the top-level `parserOptions` property like this:
+## 🛠️ Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/sterl27/ableton-live-coach-dashboard.git
+   cd ableton-live-coach-dashboard
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## 📋 Interaction Modes
+- **Immediate Help**: Quick answers for shortcuts and workflow blockers.
+- **Deep Dive**: Root-cause analysis and complex routing explanations.
+- **Workshop**: Step-by-step sound design and composition tutorials.
+- **Critique**: Feedback on arrangement and mixing decisions.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 📄 License
+MIT
