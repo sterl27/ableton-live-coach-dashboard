@@ -1,4 +1,6 @@
-export const EXPERTISE_AREAS = [
+import type { ExpertiseArea, InteractionMode, ChatMessage } from './types';
+
+export const EXPERTISE_AREAS: ExpertiseArea[] = [
   { id: 1, title: 'Core DAW Mastery', description: 'Navigation, Shortcuts & Workflow' },
   { id: 2, title: 'Live Performance', description: 'Session View & MIDI Mapping' },
   { id: 3, title: 'Sound Design', description: 'Wavetable, Operator & Analog' },
@@ -11,13 +13,13 @@ export const EXPERTISE_AREAS = [
   { id: 10, title: 'Hardware Integration', description: 'External Instruments & CV' },
 ];
 
-export const INTERACTION_MODES = [
+export const INTERACTION_MODES: InteractionMode[] = [
   { id: 'immediate', label: 'Immediate Help', icon: 'zap' },
   { id: 'deep-dive', label: 'Deep Dive', icon: 'search' },
   { id: 'workshop', label: 'Workshop', icon: 'tool' },
   { id: 'critique', label: 'Critique', icon: 'message-square' },
 ];
 
-export const INITIAL_MESSAGES = [
+export const INITIAL_MESSAGES: ChatMessage[] = [
   { role: 'assistant', text: "Hello! I'm your Ableton Live 12 Interactive Coach. How can I help you optimize your session today?" },
 ];

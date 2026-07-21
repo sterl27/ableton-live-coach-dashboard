@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { 
-  Mic, MicOff, Send, Zap, Search, Wrench, MessageSquare, 
-  Settings, Activity, Radio, Cpu, Layers, Music, Volume2, 
-  ChevronRight, Play, Square, Command
+import {
+  Mic, MicOff, Send, Zap, Search, Wrench, MessageSquare,
+  Settings, Activity, Radio, Cpu, Layers, Music, Volume2,
+  ChevronRight, Play, Square, Command, X, AlertTriangle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { EXPERTISE_AREAS, INTERACTION_MODES, INITIAL_MESSAGES } from './data';
+import { EXPERTISE_AREAS, INTERACTION_MODES } from './data';
+import { useChat } from './hooks/useChat';
+import { isApiKeyConfigured } from './gemini';
+import type { ExpertiseArea, InteractionMode } from './types';
 import './App.css';
 
 const Visualizer = ({ isActive }: { isActive: boolean }) => {
@@ -31,11 +34,14 @@ const Visualizer = ({ isActive }: { isActive: boolean }) => {
 };
 
 function App() {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  const { messages, status, error, sendMessage, clearError } = useChat();
   const [inputValue, setInputValue] = useState('');
   const [isVoiceActive, setIsVoiceActive] = useState(false);
-  const [selectedMode, setSelectedMode] = useState('immediate');
+  const [selectedMode, setSelectedMode] = useState<InteractionMode['id']>('immediate');
+  const [selectedArea, setSelectedArea] = useState<ExpertiseArea | null>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const apiKeyMissing = !isApiKeyConfigured();
+  const isStreaming = status === 'streaming';
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -44,17 +50,8 @@ function App() {
   const handleSend = (text?: string) => {
     const msg = text || inputValue;
     if (!msg.trim()) return;
-
-    setMessages(prev => [...prev, { role: 'user', text: msg }]);
     setInputValue('');
-
-    // Simulate response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        text: `Got it. In ${selectedMode} mode, I recommend checking the ${EXPERTISE_AREAS[Math.floor(Math.random() * 10)].title} section for real-time optimization.` 
-      }]);
-    }, 1000);
+    sendMessage(msg, selectedMode, selectedArea);
   };
 
   return (
@@ -90,10 +87,11 @@ function App() {
           </div>
           <div className="expertise-list">
             {EXPERTISE_AREAS.map(area => (
-              <motion.div 
-                key={area.id} 
-                className="expertise-item"
+              <motion.div
+                key={area.id}
+                className={`expertise-item ${selectedArea?.id === area.id ? 'selected' : ''}`}
                 whileHover={{ x: 5, backgroundColor: 'var(--bg-active)' }}
+                onClick={() => setSelectedArea(selectedArea?.id === area.id ? null : area)}
               >
                 <div className="expertise-icon">
                   <Music size={14} />
@@ -111,43 +109,62 @@ function App() {
         {/* Center - Chat Hub */}
         <section className="interaction-hub">
           <div className="chat-viewport">
+            {apiKeyMissing && (
+              <div className="api-key-warning">
+                <AlertTriangle size={16} />
+                <span>API key not configured. Create a <code>.env</code> file with <code>VITE_GEMINI_API_KEY</code> to enable AI coaching.</span>
+              </div>
+            )}
+
             {messages.map((msg, i) => (
-              <motion.div 
-                key={i} 
+              <motion.div
+                key={i}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`message ${msg.role === 'assistant' ? 'assistant' : 'user'}`}
               >
                 <div className="message-content">
                   {msg.text}
+                  {isStreaming && msg.role === 'assistant' && i === messages.length - 1 && (
+                    <span className="typing-cursor" />
+                  )}
                 </div>
               </motion.div>
             ))}
+
+            {error && (
+              <div className="error-banner">
+                <span>{error}</span>
+                <button onClick={clearError} className="error-dismiss"><X size={14} /></button>
+              </div>
+            )}
+
             <div ref={chatEndRef} />
           </div>
 
           <div className="interaction-controls">
             <div className="visualizer-container">
-              <Visualizer isActive={isVoiceActive} />
+              <Visualizer isActive={isVoiceActive || isStreaming} />
             </div>
-            
+
             <div className="input-area">
-              <button 
+              <button
                 className={`voice-toggle ${isVoiceActive ? 'active' : ''}`}
                 onClick={() => setIsVoiceActive(!isVoiceActive)}
               >
                 {isVoiceActive ? <Mic size={20} /> : <MicOff size={20} />}
               </button>
-              
-              <input 
-                type="text" 
-                placeholder="Ask your coach anything about Live 12..."
+
+              <input
+                type="text"
+                placeholder={apiKeyMissing ? 'Set up API key to start chatting...' : 'Ask your coach anything about Live 12...'}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                disabled={isStreaming || apiKeyMissing}
               />
-              
-              <button className="send-btn" onClick={() => handleSend()}>
+
+              <button className="send-btn" onClick={() => handleSend()} disabled={isStreaming || apiKeyMissing}>
                 <Send size={18} />
               </button>
             </div>
@@ -163,7 +180,7 @@ function App() {
             </div>
             <div className="modes-grid">
               {INTERACTION_MODES.map(mode => (
-                <button 
+                <button
                   key={mode.id}
                   className={`mode-btn ${selectedMode === mode.id ? 'selected' : ''}`}
                   onClick={() => setSelectedMode(mode.id)}
@@ -209,7 +226,7 @@ function App() {
       <footer className="app-footer">
         <div className="footer-status">
           <Radio size={12} />
-          <span>Gemini 2.5 Flash Native Audio Connected</span>
+          <span>Gemini 2.5 Flash Native Audio {apiKeyMissing ? 'Disconnected' : 'Connected'}</span>
         </div>
         <div className="cpu-usage">
           <span>CPU</span>
