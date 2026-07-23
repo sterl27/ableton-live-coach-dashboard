@@ -1,61 +1,119 @@
 # Ableton Live 12 Suite Interactive Coach Dashboard
 
-A professional, high-performance dashboard interface inspired by **Ableton Live 12**, designed for a native AI coaching experience using **Gemini 2.5 Flash Native Audio**.
+A professional Ableton Live 12 coaching interface upgraded to **Next.js App Router**, **Vercel AI SDK**, **Vercel AI Gateway**, and **shadcn-compatible UI structure**.
 
-## 🎹 Features
+The dashboard is designed for an AI-native Ableton workflow: fast coaching, Live 12 expertise navigation, streaming responses, mode-aware prompts, and a future local Ableton bridge.
 
-- **Live Dashboard Interface**: A custom-built UI with a dark, professional aesthetic mirroring the Ableton Live 12 design language.
-- **AI Coach Hub**: A central interaction point with a simulated responsive chat system.
-- **Real-time Audio Visualizer**: A dynamic frequency visualizer that reacts to voice activity and AI responses.
-- **Status Indicators**: Pulse animations for "Stream Live" and "Voice Active" system states.
-- **Core Expertise Explorer**: Deep navigation for 10 specialized DAW mastery areas:
-  - Core DAW Mastery
-  - Live Performance
-  - Sound Design
-  - MPE & Expression
-  - Mixing & Mastering
-  - Arrangement View
-  - Max for Live
-  - MIDI Effects
-  - Network Sync
-  - Hardware Integration
-- **Contextual Interaction Modes**: Switch between *Immediate Help*, *Deep Dive*, *Workshop*, and *Critique* modes to tailor the coach's behavior.
-- **Audio Engine Simulation**: Real-time display of sample rates, buffer sizes, and latency metrics.
+---
 
-## 🚀 Tech Stack
+## Stack
 
-- **Framework**: [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
-- **Build Tool**: [Vite](https://vitejs.dev/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Styling**: Vanilla CSS with custom design tokens
+```txt
+Next.js App Router
+React + TypeScript
+Vercel AI SDK
+Vercel AI Gateway
+shadcn/ui-compatible config
+Framer Motion
+Lucide React
+CSS design tokens
+```
 
-## 🛠️ Getting Started
+---
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
+## Features
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/sterl27/ableton-live-coach-dashboard.git
-   cd ableton-live-coach-dashboard
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- Ableton Live 12 cockpit UI
+- Streaming AI coach via `/api/chat`
+- Vercel AI Gateway provider
+- Mode-aware coaching prompts
+- Expertise shortcuts for Live performance, sound design, MPE, mixing, arrangement, Max for Live, MIDI effects, Link, and hardware integration
+- Animated voice / stream visualizer
+- shadcn-compatible `components.json`
+- Future-ready local Ableton bridge environment variable
 
-## 📋 Interaction Modes
-- **Immediate Help**: Quick answers for shortcuts and workflow blockers.
-- **Deep Dive**: Root-cause analysis and complex routing explanations.
-- **Workshop**: Step-by-step sound design and composition tutorials.
-- **Critique**: Feedback on arrangement and mixing decisions.
+---
 
-## 📄 License
+## Run Locally
+
+```bash
+git clone https://github.com/sterl27/ableton-live-coach-dashboard.git
+cd ableton-live-coach-dashboard
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+Open:
+
+```txt
+http://localhost:3000
+```
+
+---
+
+## Environment
+
+```bash
+AI_GATEWAY_API_KEY=
+ABLETON_COACH_MODEL=openai/gpt-5.5
+ABLETON_BRIDGE_URL=http://127.0.0.1:8765
+```
+
+`ABLETON_BRIDGE_URL` is reserved for a future local-only bridge. The dashboard does not claim to control Ableton unless a bridge confirms execution.
+
+---
+
+## Project Structure
+
+```txt
+src/
+├── app/
+│   ├── api/
+│   │   └── chat/
+│   │       └── route.ts
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   └── ui/
+│       └── button.tsx
+├── lib/
+│   ├── ai/
+│   │   └── gateway.ts
+│   └── utils.ts
+├── App.tsx
+├── App.css
+├── data.ts
+└── index.css
+```
+
+---
+
+## Interaction Modes
+
+```txt
+Immediate Help  → quick workflow blockers
+Deep Dive       → root-cause explanation
+Workshop        → guided build/tutorial
+Critique        → arrangement and mix review
+```
+
+---
+
+## Roadmap
+
+```txt
+v0.3
+├── Add Web Audio microphone analysis
+├── Replace simulated visualizer with AnalyserNode
+├── Add typed Ableton command schema
+├── Add local bridge API route
+├── Add Supabase memory/session persistence
+└── Add Max for Live Hermes Link docs
+```
+
+---
+
+## License
+
 MIT
