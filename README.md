@@ -50,6 +50,19 @@ Open:
 http://localhost:3000
 ```
 
+### Python ML and audio workspace
+
+Python 3.13 and all scientific dependencies are locked with `uv`.
+
+```bash
+uv sync
+uv run jupyter lab
+```
+
+The environment includes JupyterLab, NumPy, pandas, librosa, Matplotlib,
+SciPy, SoundFile, and the Supabase Postgres utility dependencies. Use
+`uv run python main.py` for the database connectivity check.
+
 ---
 
 ## Environment

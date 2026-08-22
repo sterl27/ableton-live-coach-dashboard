@@ -1,2 +1,10 @@
+ipykernel>=6.30,<7
+jupyterlab>=4.4,<5
+librosa>=0.11,<0.12
+matplotlib>=3.10,<4
+numpy>=2.3,<2.4
+pandas>=2.3,<4
 psycopg2==2.9.11
 python-dotenv==1.1.1
+scipy>=1.16,<1.17
+soundfile>=0.13,<0.14
