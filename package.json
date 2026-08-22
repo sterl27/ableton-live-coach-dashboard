@@ -10,23 +10,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "latest",
-    "@ai-sdk/react": "latest",
+    "@ai-sdk/openai-compatible": "3.0.34",
+    "@ai-sdk/react": "4.0.79",
     "@radix-ui/react-slot": "^1.1.2",
-    "ai": "latest",
+    "ai": "7.0.76",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.27.0",
     "lucide-react": "^0.562.0",
-    "next": "15.4.7",
+    "next": "15.5.23",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
+    "@eslint/js": "9.39.5",
     "@types/node": "^24.0.10",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.4",
+    "globals": "17.11.0",
+    "typescript-eslint": "8.67.0",
     "typescript": "~5.6.2"
   }
 }

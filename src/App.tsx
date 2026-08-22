@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
+import type { UIMessage } from 'ai';
 import { Mic, MicOff, Send, Zap, Search, Wrench, MessageSquare, Settings, Activity, Radio, Cpu, Layers, Music, Volume2, ChevronRight, Play, Square, Command } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { EXPERTISE_AREAS, INTERACTION_MODES } from './data';
@@ -11,16 +13,26 @@ const Visualizer = ({ isActive }: { isActive: boolean }) => {
   return (
     <div className="visualizer">
       {bars.map((_, i) => (
-        <motion.div key={i} className="visualizer-bar" animate={{ height: isActive ? [10, Math.random() * 40 + 20, 10] : 4 }} transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.02 }} />
+        <motion.div key={i} className="visualizer-bar" animate={{ height: isActive ? [10, 20 + ((i * 17) % 40), 10] : 4 }} transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.02 }} />
       ))}
     </div>
   );
 };
 
-function getMessageText(message: any) {
-  if (typeof message.content === 'string') return message.content;
+type InitialMessage = {
+  id: string;
+  role: 'assistant';
+  content: string;
+  parts?: never;
+};
+
+function getMessageText(message: UIMessage | InitialMessage) {
+  if ('content' in message && typeof message.content === 'string') return message.content;
   if (Array.isArray(message.parts)) {
-    return message.parts.filter((part: any) => part.type === 'text').map((part: any) => part.text).join('');
+    return message.parts
+      .filter((part) => part.type === 'text')
+      .map((part) => part.text)
+      .join('');
   }
   return '';
 }
@@ -30,10 +42,19 @@ function App() {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [selectedMode, setSelectedMode] = useState('immediate');
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const { messages, sendMessage, status } = useChat({ api: '/api/chat' });
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({ api: '/api/chat' }),
+  });
   const isStreaming = status === 'submitted' || status === 'streaming';
 
-  const visibleMessages = messages.length ? messages : [{ id: 'coach-init', role: 'assistant', content: "Hello. Ableton Live 12 Coach is online. Ask me about arrangement, mixing, Max for Live, Push, routing, or performance setup." }];
+  const initialMessage: InitialMessage = {
+    id: 'coach-init',
+    role: 'assistant',
+    content: "Hello. Ableton Live 12 Coach is online. Ask me about arrangement, mixing, Max for Live, Push, routing, or performance setup.",
+  };
+  const visibleMessages: Array<UIMessage | InitialMessage> = messages.length
+    ? messages
+    : [initialMessage];
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -73,7 +94,7 @@ function App() {
 
         <section className="interaction-hub">
           <div className="chat-viewport">
-            {visibleMessages.map((msg: any, i) => (
+            {visibleMessages.map((msg, i) => (
               <motion.div key={msg.id ?? i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`message ${msg.role === 'assistant' ? 'assistant' : 'user'}`}>
                 <div className="message-content">{getMessageText(msg)}</div>
               </motion.div>

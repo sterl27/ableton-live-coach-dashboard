@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: gateway(ABLETON_COACH_MODEL),
     system,
-    messages: convertToModelMessages(messages ?? []),
+    messages: await convertToModelMessages(messages ?? []),
   });
 
   return result.toUIMessageStreamResponse();
