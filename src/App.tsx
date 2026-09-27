@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { EXPERTISE_AREAS, INTERACTION_MODES } from './data';
 import { useChat } from './hooks/useChat';
 import { isApiKeyConfigured } from './gemini';
+import { connectOscBridge, sendTransport } from './osc-bridge';
 import type { ExpertiseArea, InteractionMode } from './types';
 import './App.css';
 
@@ -39,9 +40,15 @@ function App() {
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const [selectedMode, setSelectedMode] = useState<InteractionMode['id']>('immediate');
   const [selectedArea, setSelectedArea] = useState<ExpertiseArea | null>(null);
+  const [oscConnected, setOscConnected] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const apiKeyMissing = !isApiKeyConfigured();
   const isStreaming = status === 'streaming';
+
+  useEffect(() => {
+    const disconnect = connectOscBridge(undefined, setOscConnected);
+    return disconnect;
+  }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -217,8 +224,8 @@ function App() {
           </div>
 
           <div className="playback-controls">
-             <button className="playback-btn"><Play size={18} /></button>
-             <button className="playback-btn"><Square size={18} /></button>
+             <button className="playback-btn" onClick={() => sendTransport('play')} title="Play"><Play size={18} /></button>
+             <button className="playback-btn" onClick={() => sendTransport('stop')} title="Stop"><Square size={18} /></button>
           </div>
         </aside>
       </main>
@@ -226,7 +233,11 @@ function App() {
       <footer className="app-footer">
         <div className="footer-status">
           <Radio size={12} />
-          <span>Gemini 2.5 Flash Native Audio {apiKeyMissing ? 'Disconnected' : 'Connected'}</span>
+          <span>Gemini 2.5 Flash {apiKeyMissing ? 'Disconnected' : 'Connected'}</span>
+        </div>
+        <div className="footer-status">
+          <span className={`status-indicator ${oscConnected ? 'status-active' : ''}`}></span>
+          <span>OSC Bridge {oscConnected ? 'Connected' : 'Offline'}</span>
         </div>
         <div className="cpu-usage">
           <span>CPU</span>

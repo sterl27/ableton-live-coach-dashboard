@@ -1,14 +1,34 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import type { ChatMessage, ChatStatus, ExpertiseArea, InteractionMode } from '../types';
 import { streamChat } from '../gemini';
 import { INITIAL_MESSAGES } from '../data';
+import { saveSession, loadLatestSession, isSupabaseConfigured } from '../supabase';
+
+function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
   const [status, setStatus] = useState<ChatStatus>('idle');
   const [error, setError] = useState<string | null>(null);
+  const [sessionId] = useState(() => generateId());
   const abortRef = useRef<AbortController | null>(null);
   const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    loadLatestSession().then(session => {
+      if (session && session.messages.length > 1) {
+        setMessages(session.messages);
+      }
+    });
+  }, []);
+
+  const persist = useCallback((msgs: ChatMessage[], mode: string, areaId: number | null) => {
+    if (!isSupabaseConfigured()) return;
+    saveSession(sessionId, msgs, mode, areaId);
+  }, [sessionId]);
 
   const sendMessage = useCallback(async (
     text: string,
@@ -53,6 +73,9 @@ export function useChat() {
       cancelAnimationFrame(rafRef.current);
       flushToState();
       setStatus('idle');
+
+      const finalMessages = [...messages, userMessage, { role: 'assistant' as const, text: accumulated }];
+      persist(finalMessages, mode, area?.id ?? null);
     } catch (err) {
       cancelAnimationFrame(rafRef.current);
       if (controller.signal.aborted) return;
@@ -67,7 +90,7 @@ export function useChat() {
       }
       setStatus('error');
     }
-  }, [messages, status]);
+  }, [messages, status, persist]);
 
   const clearError = useCallback(() => setError(null), []);
 
