@@ -5,7 +5,7 @@ description = "Python audio-analysis and Supabase tooling for Ableton Live Coach
 requires-python = ">=3.13,<3.14"
 dependencies = [
   "ipykernel>=6.30,<7",
-  "jupyterlab>=4.4,<5",
+  "jupyterlab>=4.6.4,<5",
   "librosa>=0.11,<0.12",
   "matplotlib>=3.10,<4",
   "numpy>=2.3,<2.4",
@@ -18,3 +18,15 @@ dependencies = [
 
 [tool.uv]
 package = false
+# Floors for transitive packages with open critical or high advisories.
+# beautifulsoup4 4.15.0 requires soupsieve>=1.6.1, so 4.x needs no bs4 bump.
+constraint-dependencies = [
+  "certifi>=2026.10.18",
+  "jupyter-server>=2.21.0",
+  "msgpack>=1.2.3",
+  "nbconvert>=7.17.2",
+  "pillow>=13.0.0",
+  "soupsieve>=4.0.0",
+  "tornado>=6.5.9",
+  "urllib3>=2.8.0",
+]
